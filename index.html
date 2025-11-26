@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="js/all.js"></script>
+	<title>INDICADORES - MMIM 2025</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+	<script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+	<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+	<script>
+		const firebaseConfig = {
+			apiKey: "YOUR_API_KEY",
+			authDomain: "indtodo.firebaseapp.com",
+			databaseURL: "https://indtodo-default-rtdb.firebaseio.com/",
+			projectId: "indtodo",
+			storageBucket: "indtodo.appspot.com",
+			messagingSenderId: "YOUR_SENDER_ID",
+			appId: "YOUR_APP_ID"
+		};	  
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+	</script>
+
+	<link rel="stylesheet" href="css/estilos.css">
+	<link rel="stylesheet" href="css/tabulator_modern.css">
+
+	<header> 
+		<div class="contenedor_header"> 
+			<div class="selected-display"> 
+				<span id="selected-month" class="selected-month">junio</span> 
+				<span id="selected-year" class="selected-year">2025</span> 
+				<span>-</span> 
+				<span id="selected-unit">Oaxaca</span> 
+			</div> 
+
+			<div class="rank_unidad" id="rank_unidad_1"> 
+				<div class="rank_title" id="rank_title_1">1° Nivel</div> 
+				<span id="rank_1">71.5</span> 
+			</div>
+
+			<div class="rank_unidad" id="rank_unidad_2"> 
+				<div class="rank_title" id="rank_title_2">Delegacional</div> 
+				<span id="rank_2">60.0</span> 
+			</div> 
+
+			<div class="picker" id="fechas_chico">
+				<button class="nav-btn-2" id="prev-month"><i class="fa-solid fa-square-caret-left" style="font-size: 16px;"></i></button>
+				<div class="month-display">
+					<span id="selected-month" class="selected-month">junio</span>
+					<span id="selected-year" class="selected-year">2025</span>
+				</div>
+				<button class="nav-btn-2" id="next-month"><i class="fa-solid fa-square-caret-right" style="font-size: 16px;"></i></button>
+			</div>
+
+			<div class="picker" id="unidades_selector"> 
+				<select id="unidad_select"> 
+					<option></option> 
+				</select> 
+			</div> 
+		</div> 
+	</header>
+</head>
+<body>
+	<div id="loader-overlay">
+		<div class="loader"></div>
+	</div>
+
+	<div>
+		<div class="contenedor-separator">
+			<b class="separator">GENERAL</b>
+		</div>
+	</div>
+	
+	<div class="contenedor">
+		<div id="desempeños" class="clickable-plot"></div>
+		<div id="indicadores_x_desempeño" class="clickable-plot"></div>
+	</div>
+
+	<div class="contenedor">
+		<div id="indicadores_historico" class="non-clickable-plot"></div> 
+		<div id="indicador_numden" class="non-clickable-plot"></div>   
+	</div>
+
+	<div>
+		<div class="contenedor-separator">
+			<b class="separator">RANKING</b>
+		</div>
+	</div>
+
+	<div class="contenedor">    
+		<div id="ranking_general_1N" class="clickable-plot" hidden></div>  
+		<div id="ranking_indicador_1N" class="non-clickable-plot" hidden></div>
+	</div>
+
+	<div class="contenedor">    
+		<div id="ranking_general_2N" class="clickable-plot" hidden></div>  
+		<div id="ranking_indicador_2N" class="non-clickable-plot"></div>
+	</div>
+
+	<div>
+		<div class="contenedor-separator">
+			<b class="separator">Datos</b>
+		</div>
+	</div>
+
+	<div class="contenedor">
+		<div id="tabla_1" class="tablas"></div>
+		<div id="tabla_2" class="tablas"></div>
+	</div>
+
+	<div>
+		<div class="contenedor-separator">
+			<b class="separator">ANÁLISIS</b>
+		</div>		
+	</div>
+
+	<div class="contenedor">
+		<div id="tabla_rank_comp_1" class="tablas"></div>
+		<div id="tabla_rank_comp_2" class="tablas"></div>
+	</div>
+
+	<h1>- alo?</h1>
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+	<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+	<script src="js/main.js"></script>
+</body>
+</html>

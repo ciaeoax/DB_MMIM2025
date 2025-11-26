@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tree Table Example</title>
+<link href="/dist/css/tabulator_modern.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<h2>Excel Style Tree — Tabulator 6.3</h2>
+<div id="table"></div>
+
+<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+<script>
+// ------------------------------------
+// Your Excel-like hierarchical data
+// ------------------------------------
+const data = [
+    {
+        id: "ps",
+        indicador: "Procesos de Salud",
+        ponderacion_obtenida: 66.15,
+        ponderacion_estimada: 87.00,
+        ponderacion_ajustada: 76.03,
+        _children: [
+            { indicador: "DM", ponderacion_obtenida: 7.02, ponderacion_estimada: 20, ponderacion_ajustada: 35.11 },
+            { indicador: "EH", ponderacion_obtenida: 13.39, ponderacion_estimada: 16, ponderacion_ajustada: 83.68 },
+            { indicador: "CAMama", ponderacion_obtenida: 15.23, ponderacion_estimada: 16, ponderacion_ajustada: 95.16 },
+            { indicador: "CACU", ponderacion_obtenida: 14.74, ponderacion_estimada: 15, ponderacion_ajustada: 98.30 },
+            { indicador: "Materna", ponderacion_obtenida: 4.00, ponderacion_estimada: 4, ponderacion_ajustada: 100 },
+            { indicador: "Neonatal", ponderacion_obtenida: 4.00, ponderacion_estimada: 4, ponderacion_ajustada: 100 },
+
+            {
+                indicador: "S.Ob",
+                ponderacion_obtenida: 7.77,
+                ponderacion_estimada: 12,
+                ponderacion_ajustada: 64.75,
+                _children: [
+                    { indicador: "S.Ob 01", ponderacion_obtenida: 3.82, ponderacion_estimada: 4, ponderacion_ajustada: 95.46 },
+                    { indicador: "S.Ob 02", ponderacion_obtenida: 3.95, ponderacion_estimada: 4, ponderacion_ajustada: 98.79 },
+                    { indicador: "S.Ob 04", ponderacion_obtenida: 0.00, ponderacion_estimada: 4, ponderacion_ajustada: 0.00 },
+                ]
+            },
+        ]
+    },
+
+    {
+        id: "cn",
+        indicador: "Coordinaciones Normativas",
+        ponderacion_obtenida: 14.77,
+        ponderacion_estimada: 15.00,
+        ponderacion_ajustada: 98.45,
+        _children: [
+            { indicador: "CUPN", ponderacion_obtenida: 10.77, ponderacion_estimada: 11, ponderacion_ajustada: 97.89 },
+            { indicador: "CES",  ponderacion_obtenida: 4.00,  ponderacion_estimada: 4,  ponderacion_ajustada: 100 },
+        ]
+    }
+];
+console.log(data);
+// ------------------------------------
+// Create Table
+// ------------------------------------
+new Tabulator("#table", {
+    data: data,
+    layout: "fitColumns",
+
+    // Enable tree structure
+    dataTree: true,
+    dataTreeStartExpanded: false,   // expand or collapse by default
+    dataTreeChildField: "_children",
+    dataTreeSelectPropagate: true,
+
+    columns: [
+        { title: "Indicadores", field: "indicador", width: 300 },
+        { title: "Ponderación Obtenida", field: "ponderacion_obtenida", hozAlign: "right" },
+        { title: "Ponderación Estimada", field: "ponderacion_estimada", hozAlign: "right" },
+        { title: "Ponderación Ajustada", field: "ponderacion_ajustada", hozAlign: "right" },
+    ],
+});
+</script>
+
+</body>
+</html>
