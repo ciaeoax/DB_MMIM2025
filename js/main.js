@@ -1247,10 +1247,10 @@ function analisisRanking_2(datos_mes_act, datos_mes_ant) {
 	const a = datos_mes_ant.inds;
 	console.log(a, typeof a);
 	
+	/*
 	Object.entries(datos_mes_ant.inds).map(([indicador, valores]) => {
 		mapaAnterior.set(indicador, valores.valores.pond_est);
 	})
-	/*
 	a.forEach(item => {
 		console.log(item);
 		//mapaAnterior.set(item.indicador, item.valor);
@@ -2651,3 +2651,4 @@ console.log('INICIO')
 document.getElementById('loader-overlay').style.display = 'flex';
 loader.classList.add('show-loader');
 window.addEventListener('DOMContentLoaded', loadFirebaseData);
+
