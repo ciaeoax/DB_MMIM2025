@@ -288,7 +288,7 @@ Plotly.newPlot("indicador_numden",
 			bgcolor: 'rgba(0,0,0,0)'//'whitesmoke'
 		},
 		title: {
-			text: 'Valor actual, Numerador / Denominador - Oaxaca, junio 2025',
+			text: 'Para actualizar, presione el botón que se encuentra arriba.',
 			font: { size: 20 },
 			x: 0.5,
 			y: 0.95
@@ -568,25 +568,25 @@ const data_2 = [
 		indicador: 'DM',
 		mes_ant: '15.00',
 		mes_act: '15.00',
-		diferencia: '—0.00'
+		diferencia: '0.00'
 	},
 	{
 		indicador: 'EH',
 		mes_ant: '15.44',
 		mes_act: '15.40',
-		diferencia: '▼0.04'
+		diferencia: '-0.04'
 	},
 	{
 		indicador: 'CAMama',
 		mes_ant: '6.08',
 		mes_act: '6.86',
-		diferencia: '▲0.78'
+		diferencia: '0.78'
 	},
 	{
 		indicador: 'CACU',
 		mes_ant: '13.76',
 		mes_act: '13.79',
-		diferencia: '▲0.03'
+		diferencia: '0.03'
 	}
 ];
 
@@ -602,6 +602,7 @@ tabla_ranking_1 = new Tabulator("#tabla_1", {
     dataTreeStartExpanded: [true, true, false],
 
     columns: [
+    	/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
         { title: "Indicadores<br>1° Nivel", field: "indicador", width: 300, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
@@ -650,8 +651,8 @@ tabla_ranking_2 = new Tabulator("#tabla_2", {
     dataTreeChildField: "_children",
     dataTreeSelectPropagate: true,
     dataTreeStartExpanded: [true, true, false],
-
     columns: [
+    	/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
         { title: "Indicadores<br>2° Nivel/Delegacional", field: "indicador", width: 300, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
@@ -696,12 +697,56 @@ tabla_ranking_comp_1 = new Tabulator("#tabla_rank_comp_1", {
     dataTree: true,
     dataTreeSelectPropagate: true,
     columns: [
-        { title: "Indicadores", field: "indicador", width: 300, },
-        { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 150 },
-        { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 150 },
-        { title: "Diferencia", field: "diferencia", hozAlign: "center", width: 150 },
+    	{ title: 'n', formatter: 'rownum', hozAlign: "center", },
+        { title: "Indicadores", field: "indicador", width: 140, },
+        { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Diferencia", field: "diferencia", hozAlign: "center", formatter: formatoTablaAnalisis_2, width: 180 },
     ],
 });
+
+tabla_ranking_comp_21 = new Tabulator("#tabla_rank_comp_21", {
+    data: data_2,
+    // Enable tree structure
+    dataTree: true,
+    dataTreeSelectPropagate: true,
+    columns: [
+    	{ title: 'n', formatter: 'rownum', hozAlign: "center", },
+        { title: "Indicadores", field: "indicador", width: 200, tooltip: function(e, cell) {
+				if (!cell || typeof cell.getRow !== "function") return null;		
+				const row = cell.getRow();
+				console.log(row);
+				const nombre_indicador_ = row.getData().indicador;
+				const descr_indicador_ = indicadores_nombres[nombre_indicador_] ? indicadores_nombres[nombre_indicador_] : '-';
+				let depth = 0;
+				let parent = row.getTreeParent();
+				while (parent) {
+					depth++;
+					parent = parent.getTreeParent();
+				}
+				if (depth === 3) return descr_indicador_;
+				return null;
+        }},
+        { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Diferencia", field: "diferencia", hozAlign: "center", formatter: formatoTablaAnalisis_2, width: 180 },
+    ],
+});
+
+tabla_ranking_comp_22 = new Tabulator("#tabla_rank_comp_22", {
+    data: data_2,
+    // Enable tree structure
+    dataTree: true,
+    dataTreeSelectPropagate: true,
+    columns: [
+    	{ title: 'n', formatter: 'rownum', hozAlign: "center", },
+        { title: "Indicadores", field: "indicador", width: 200, },
+        { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 180 },
+        { title: "Diferencia", field: "diferencia", hozAlign: "center", formatter: formatoTablaAnalisis_2, width: 180 },
+    ],
+});
+
 
 
 // **************** FUNCIONES ***************** //
@@ -1243,35 +1288,58 @@ function analisisRanking(datos_pond_fecha, nivel){
 }
 
 function analisisRanking_2(datos_mes_act, datos_mes_ant) {
-	const mapaAnterior = new Map();
-	const a = datos_mes_ant.inds;
-	console.log(a, typeof a);
-	
-	/*
-	Object.entries(datos_mes_ant.inds).map(([indicador, valores]) => {
-		mapaAnterior.set(indicador, valores.valores.pond_est);
-	})
-	a.forEach(item => {
-		console.log(item);
-		//mapaAnterior.set(item.indicador, item.valor);
-	}); 
+	const indicadores_ = Object.keys(datos_mes_ant.inds);
 
-	// Build final rows
-	const resultado = actual.map(item => {
-		const valorAnt = mapaAnterior.get(item.indicador) ?? null;
-		const valorAct = item.valor;
+	const resultado = indicadores_.map(indicador_ => {
+		const datoAnt = datos_mes_ant.inds[indicador_];
+		const datoAct = datos_mes_act.inds[indicador_];
+
+		const pondAnt = datoAnt ? datoAnt.pond_obt : 0;
+		const pondAct = datoAct ? datoAct.pond_obt : 0;
 
 		return {
-			indicador: item.indicador,
-			anterior: valorAnt,
-			actual: valorAct,
-			diferencia: valorAct != null && valorAnt != null
-			? (valorAct - valorAnt).toFixed(2)
-			: null,
+			indicador: indicador_,
+			mes_ant: pondAnt,
+			mes_act: pondAct,
+			diferencia: pondAct - pondAnt
 		};
 	});
-
+	console.log(resultado);
 	return resultado;//*/
+}
+
+function analisisRanking_3(datos_mes_act, datos_mes_ant) {
+	const indicadores_ = Object.keys(datos_mes_ant.inds);
+	peores = [];
+	mejores = [];
+
+	indicadores_.map(indicador_ => {
+		const datos_ant_ind = datos_mes_ant.inds[indicador_];
+		const datos_act_ind = datos_mes_act.inds[indicador_];
+		const ind = Object.keys(datos_ant_ind.indicadores);
+
+		ind.map(ind_ => {
+			const datoAnt = datos_ant_ind.indicadores[ind_];
+			const datoAct = datos_act_ind.indicadores[ind_];
+
+			const pondAct = datoAct ? datoAct.pond_obt : 0;
+			const pondAnt = datoAnt ? datoAnt.pond_obt : 0;
+			const diferencia = pondAct - pondAnt;
+
+			dato = {
+				indicador : ind_,
+				mes_ant : pondAnt,
+				mes_act : pondAct,
+				diferencia : pondAct - pondAnt
+			};
+			
+			if (diferencia < 0)
+				peores.push(dato);
+			else if (diferencia > 0)
+				mejores.push(dato);
+		});
+	});
+	return [mejores, peores];
 }
 
 function formato2decimas(celda){
@@ -1354,7 +1422,17 @@ function formatoTablaAnalisis(raw) {
 	return result;
 }
 
+function formatoTablaAnalisis_2(celda, formatterParams, onredered) {
+	value = celda.getValue();
+	var displayValue = Math.abs(value).toFixed(2); 
 
+	if(value > 0)
+		return `<span style="color:#009900; font-weight:bold;">▲ ${displayValue}</span>`;
+	else if(value < 0)
+		return `<span style="color:#cc0000; font-weight:bold;">▼ ${displayValue}</span>`;
+	else
+		return `<span style="color:black; font-weight:bold;">— ${displayValue}</span>`;
+}
 
 function ActualizarCadaGrafica(paso){
 	ranking_1_resultado = document.getElementById('rank_unidad_1');
@@ -1780,7 +1858,7 @@ function actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado){
 	}); // indicadores_historico
 }
 
-async function actualizarGraficaNumDen(datos, unidad_deseada, indicador_deseado, fecha_deseada) {
+async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_deseado, fecha_deseada
 	const datosFiltrados_ = filtrarUnidad(datos, unidad_deseada);
 	const datosFiltrados__ = filtrarIndicador(datosFiltrados_, indicador_deseado);
 	const datosFiltrados5 = filtrarFecha(datosFiltrados__, fecha_deseada);
@@ -2533,7 +2611,7 @@ function actualizarAnalisis_1(pond_unidad_1, pond_unidad_2){
 	let data_1 = new Object();
 	let data_2 = new Object();
 
-	if (unidad_deseada == 'HGZMF 02 Salina Cruz' | unidad_deseada == 'HGSMF 41 Huatulco'){
+	if (unidad_deseada == 'HGZMF 02 Salina Cruz' | unidad_deseada == 'HGSMF 41 Huatulco') {
 		data_1 = formatoTablaAnalisis(pond_unidad_1);
 		tabla_ranking_1.updateOrAddData(data_1);
 		data_2 = formatoTablaAnalisis(pond_unidad_2);
@@ -2555,6 +2633,10 @@ function actualizarAnalisis_1(pond_unidad_1, pond_unidad_2){
 }
 
 function actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada){
+	tabla_ranking_comp_1.clearData();
+	tabla_ranking_comp_21.clearData();
+	tabla_ranking_comp_22.clearData();
+
 	datos_pond_ = filtrarUnidad(datos_pond, unidad_deseada);
 	datos_mes_act = filtrarFecha(datos_pond_, fecha_deseada);
 	[mes, año] = fecha_deseada.split(' ');
@@ -2565,9 +2647,19 @@ function actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada){
 	rank_mes_act = agruparRanking(datos_mes_act);
 	rank_mes_ant = agruparRanking(datos_mes_ant);
 
-	analisisRanking_2(rank_mes_act, rank_mes_ant);
-
-
+	data_1 = analisisRanking_2(rank_mes_act, rank_mes_ant);
+	tabla_ranking_comp_1.updateOrAddData(data_1);
+	tabla_ranking_comp_1.getColumn("mes_ant").updateDefinition({title: fecha_ant});
+	tabla_ranking_comp_1.getColumn("mes_act").updateDefinition({title: fecha_deseada});
+	
+	[data_mejor, data_peor] = analisisRanking_3(rank_mes_act, rank_mes_ant);
+	console.log(data_peor, data_mejor);
+	tabla_ranking_comp_21.updateOrAddData(data_peor);
+	tabla_ranking_comp_22.updateOrAddData(data_mejor);
+	tabla_ranking_comp_21.getColumn("mes_ant").updateDefinition({title: fecha_ant});
+	tabla_ranking_comp_21.getColumn("mes_act").updateDefinition({title: fecha_deseada});
+	tabla_ranking_comp_22.getColumn("mes_ant").updateDefinition({title: fecha_ant});
+	tabla_ranking_comp_22.getColumn("mes_act").updateDefinition({title: fecha_deseada});
 }
 
 document.getElementById('prev-month').addEventListener('click', () => {    
@@ -2651,4 +2743,3 @@ console.log('INICIO')
 document.getElementById('loader-overlay').style.display = 'flex';
 loader.classList.add('show-loader');
 window.addEventListener('DOMContentLoaded', loadFirebaseData);
-
