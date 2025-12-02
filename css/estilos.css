@@ -1,3 +1,4 @@
+
 :root {
 	--ancho: 95%;
 	--cafe_suave: rgba(210, 204, 161, 0.5);
@@ -304,3 +305,4 @@ contenedor .tablas{
 .btn-actualizar:hover {
 	background-color: var(--azul_navy_letra); /*#0056b3; /* Azul más oscuro al pasar el mouse */
 }
+
