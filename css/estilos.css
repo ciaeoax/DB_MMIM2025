@@ -13,6 +13,10 @@
 	--verde: green;
 	--amarillo: orange;
 	--rojo: red;
+
+	--fila_color: #fff; /*rgba(225, 225, 225, 0.5); gris_suave*/
+	--linea_fuerte: #D2CCA1;
+	--linea_suave: rgba(210, 204, 161, 0.5);
 }
 
 * {
@@ -212,6 +216,10 @@ body {
 	max-width: 20%;
 }
 
+#indicador_numden {
+	width: auto;
+}
+
 /* ***************** TABLAS **************** */
 contenedor .tablas{
 	vertical-align: top;
@@ -233,4 +241,66 @@ contenedor .tablas{
 	align-items: center;
 	text-align: center;
 	vertical-align: top;
+}
+
+#tabla_rank_comp_21, #tabla_rank_comp_22 {
+	width:auto; 
+	height: 250px; 
+	margin: 10px;
+}
+
+/* ** TABLA PEORES ** */
+#tabla_rank_comp_21 .tabulator-header, #tabla_rank_comp_21 .tabulator-col{
+	background-color: var(--rojo);
+	color: white;
+	border-bottom: none;
+}
+#tabla_rank_comp_21 .tabulator-row .tabulator-cell:first-child{
+	--linea_fuerte: var(--rojo);
+	border-left: 10px solid var(--linea_fuerte);
+}
+#tabla_rank_comp_21 .tabulator-row:nth-child(even) .tabulator-cell:first-child {
+	--linea_suave: var(--coral);
+	border-left: 10px solid var(--linea_suave);
+}
+
+/* ** TABLA MEJORES ** */
+#tabla_rank_comp_22 .tabulator-header, #tabla_rank_comp_22 .tabulator-col{
+	background: var(--verde);
+	color: white;
+	border-bottom: none;
+}
+#tabla_rank_comp_22 .tabulator-row .tabulator-cell:first-child{
+	--linea_fuerte: var(--verde);
+	border-left: 10px solid var(--linea_fuerte);
+}
+#tabla_rank_comp_22 .tabulator-row:nth-child(even) .tabulator-cell:first-child {
+	--linea_suave: rgba(0, 204, 0, 0.5);
+	border-left: 10px solid var(--linea_suave);
+}
+
+/* **************** BOTON ******************* */
+.barra-controles {
+	width: var(--ancho); 
+	display: flex;
+	justify-content: end;
+	margin-left: auto;
+	margin-bottom: -20px;
+	padding-right: 50px;
+}
+
+.btn-actualizar {
+	background-color: var(--azul_marina_letra); /* #007bff; /* Azul estándar (cámbialo a tu gusto) */
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+	transition: background 0.3s;
+}
+
+.btn-actualizar:hover {
+	background-color: var(--azul_navy_letra); /*#0056b3; /* Azul más oscuro al pasar el mouse */
 }
