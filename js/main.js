@@ -288,7 +288,7 @@ Plotly.newPlot("indicador_numden",
 			bgcolor: 'rgba(0,0,0,0)'//'whitesmoke'
 		},
 		title: {
-			text: 'Para actualizar, presione el botón que se encuentra arriba.',
+			text: 'Para actualizar, presione el botón 《 Actualizar Gráfica 》.',
 			font: { size: 20 },
 			x: 0.5,
 			y: 0.95
@@ -591,19 +591,22 @@ const data_2 = [
 ];
 
 tabla_ranking_1 = new Tabulator("#tabla_1", {
-    data: data,
-    //layout: "fitColumns",
-    selectableRows:true,
+	data: data,
+	//layout: "fitColumns",
+	//selectableRows:true,
+	columnDefaults:{
+		headerSort: false,  // <--- ESTO desactiva el ordenamiento
+	},
 
-    // Enable tree structure
-    dataTree: true,
-    dataTreeChildField: "_children",
-    dataTreeSelectPropagate: true,
-    dataTreeStartExpanded: [true, true, false],
+	// Enable tree structure
+	dataTree: true,
+	dataTreeChildField: "_children",
+	dataTreeSelectPropagate: true,
+	dataTreeStartExpanded: [true, true, false],
 
-    columns: [
-    	/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
-        { title: "Indicadores<br>1° Nivel", field: "indicador", width: 300, tooltip: function(e, cell) {
+	columns: [
+		/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
+		{ title: "Indicadores<br>1° Nivel", field: "indicador", width: 300, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
 				let depth = 0;
@@ -642,18 +645,21 @@ tabla_ranking_1 = new Tabulator("#tabla_1", {
 });
 
 tabla_ranking_2 = new Tabulator("#tabla_2", {
-    data: data,
-    //layout: "fitColumns",
-    //selectableRows:true,
+	data: data,
+	//layout: "fitColumns",
+	//selectableRows:true,
+	columnDefaults:{
+		headerSort: false,  // <--- ESTO desactiva el ordenamiento
+	},
 
-    // Enable tree structure
-    dataTree: true,
-    dataTreeChildField: "_children",
-    dataTreeSelectPropagate: true,
-    dataTreeStartExpanded: [true, true, false],
-    columns: [
-    	/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
-        { title: "Indicadores<br>2° Nivel/Delegacional", field: "indicador", width: 300, tooltip: function(e, cell) {
+	// Enable tree structure
+	dataTree: true,
+	dataTreeChildField: "_children",
+	dataTreeSelectPropagate: true,
+	dataTreeStartExpanded: [true, true, false],
+	columns: [
+		/*{ title: 'n', formatter: 'rownum', hozAlign: "center", },*/
+		{ title: "Indicadores<br>2° Nivel/Delegacional", field: "indicador", width: 300, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
 				const nombre_indicador_ = row.getData().indicador;
@@ -1489,6 +1495,7 @@ function ActualizarCadaGrafica(paso){
 		actualizarGraficaDesempeñosBarras(datosFiltrados, desempeño);
 		actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado);
 		//actualizarGraficaNumDen(datos, unidad_deseada, indicador_deseado, fecha_deseada);
+		limpiarGraficaNumDen();
 		actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada);
 		pond_unidad_1 = actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_deseada);
 		actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada);
@@ -1497,6 +1504,7 @@ function ActualizarCadaGrafica(paso){
 		actualizarGraficaDesempeñosBarras(datosFiltrados, desempeño);
 		actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado);
 		//actualizarGraficaNumDen(datos, unidad_deseada, indicador_deseado, fecha_deseada);
+		limpiarGraficaNumDen();
 		actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada);
 		pond_unidad_1 = actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_deseada);
 		actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada);
@@ -1504,12 +1512,14 @@ function ActualizarCadaGrafica(paso){
 	} else if (paso == 3){
 		actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado);
 		//actualizarGraficaNumDen(datos, unidad_deseada, indicador_deseado, fecha_deseada);
+		limpiarGraficaNumDen();
 		actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada);
 		pond_unidad_1 = actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_deseada);
 		actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada);
 		pond_unidad_2 = actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_deseada);
 	} else if (paso == 4){
 		//actualizarGraficaNumDen(datos, unidad_deseada, indicador_deseado, fecha_deseada);
+		limpiarGraficaNumDen();
 		actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada);
 		pond_unidad_1 = actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_deseada);
 		actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada);
@@ -2155,6 +2165,49 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	document.getElementById('loader-overlay').style.display = 'none';
 	//loader.classList.remove('show-loader');
 	//console.log('Loader none')
+}
+
+function limpiarGraficaNumDen(){
+	Plotly.react("indicador_numden",
+	[{
+		x: [0,1,2,3,4,5],
+		y: [0,1,2,3,4,5],
+		z: [null, 1, null, 1, null, 1],
+		type: 'contour',
+		contours: {
+			coloring: 'heatmap',
+			showlabels: false
+		},
+		colorscale: [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,200,200,0.3)']],
+		text: '',
+		hoverinfo: 'text',
+		showscale: false
+	}],
+	{
+		legend: {
+			x: 0.01,
+			y: 0.90,
+			xanchor: 'left',
+			yanchor: 'top',
+			bgcolor: 'rgba(0,0,0,0)'//'whitesmoke'
+		},
+		title: {
+			text: 'Para actualizar, presione el botón 《 Actualizar Gráfica 》.',
+			font: { size: 20 },
+			x: 0.5,
+			y: 0.95
+		},
+		font: {
+			family: 'Noto Sans',
+			color: 'black',
+			size: 16,
+			weight: 'bold'
+		},
+		xaxis: { title: 'Den' },
+		yaxis: { title: 'Num' },
+		margin: {r: 10, b: 60, t: 50}
+	}
+); // indicador_numden
 }
 
 function actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada){	
