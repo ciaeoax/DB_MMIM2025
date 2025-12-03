@@ -1,4 +1,3 @@
-
 :root {
 	--ancho: 95%;
 	--cafe_suave: rgba(210, 204, 161, 0.5);
@@ -207,11 +206,11 @@ body {
 	box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 	margin-left: auto;
 	margin-right: auto;
-	border: 2px solid #fff;
+	border: 4px solid #fff;
 }
 .clickable-plot:hover {
 	cursor: pointer;
-	border: 2px solid var(--coral);
+	border: 4px solid var(--coral);
 }
 #desempeños {
 	max-width: 20%;
@@ -305,4 +304,3 @@ contenedor .tablas{
 .btn-actualizar:hover {
 	background-color: var(--azul_navy_letra); /*#0056b3; /* Azul más oscuro al pasar el mouse */
 }
-
