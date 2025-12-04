@@ -721,7 +721,6 @@ tabla_ranking_comp_21 = new Tabulator("#tabla_rank_comp_21", {
         { title: "Indicadores", field: "indicador", width: 200, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
-				console.log(row);
 				const nombre_indicador_ = row.getData().indicador;
 				const descr_indicador_ = indicadores_nombres[nombre_indicador_] ? indicadores_nombres[nombre_indicador_] : '-';
 				let depth = 0;
@@ -813,12 +812,11 @@ function loadFirebaseData() {
 
 		// Call any functions that depend on this data 
 		//initializeAfterDataLoad(); 
-		//console.log(datos, datos_pond, datos_desc, typeof datos); 
 		fechas = obtenerFechas(datos);
 		fecha_deseada = fechas[fechas.length - 1];
 		mes_deseado = fecha_deseada.split(' ')[0];
 		selectedMonth = meses.indexOf(mes_deseado);
-		console.log('La ultima fecha es: ', fecha_deseada, selectedMonth);
+		console.log('La ultima fecha es: ', fecha_deseada);
 		console.log("Termina de comunicarse. Comienza a graficar.");
 		datos_desc.forEach(row => {
 			indicadores_nombres[row.indicador] = row.nombre_indicador;
@@ -937,7 +935,6 @@ function updateSelectedMonth() {
 	mes_deseado = meses[selectedMonth];
 	fecha_deseada = `${meses[selectedMonth]} ${currentYear}`;
 	checkMonths(fecha_deseada);
-	//ActualizarCadaGrafica(1);
 }
 
 function updateSelectedUnit() {
@@ -947,7 +944,6 @@ function updateSelectedUnit() {
 
 // Checar las disponibilidad del boton en header
 function checkMonths(fecha) {
-	//console.log(fecha, fechas);
 	if (fecha == fechas[fechas.length - 1]){
 		document.getElementById('prev-month').disabled = false;
 		document.getElementById('next-month').disabled = true;
@@ -1023,7 +1019,6 @@ function filtrarErrores(datosFiltrados) {
 			error = (Math.abs(errorMedio) <= Math.abs(errorBajo)) ? errorMedio : errorBajo;
 			errorColor = (Math.abs(errorMedio) < Math.abs(errorBajo)) ? 'orange' : 'red';
 		}
-		// console.log(error, errorColor, '-------', indicador);
 		valor_esperado = valor - error;
 		return {
 			indicador: indicador,
@@ -1034,7 +1029,6 @@ function filtrarErrores(datosFiltrados) {
 			fecha: fecha
 		};
 	});
-	//console.log(datosConError);
 	return datosConError;
 }
 
@@ -1206,7 +1200,6 @@ function agruparRanking(datos_pond){
 		}
 	});
 
-	//console.log(resultado_2);
 	// Calcula pond_aju para cada indicador
 	resultado_2.pond_aju = ((resultado_2.pond_proc_obt/resultado_2.pond_proc_est*60) + (resultado_2.pond_norm_obt/resultado_2.pond_norm_est*40));
 	if (resultado_2.pond_aju >= 80) 
@@ -1215,13 +1208,11 @@ function agruparRanking(datos_pond){
 	resultado_2.color = 'orange';
 	else
 	resultado_2.color = 'red';
-	//console.log(resultado_2);
 	return resultado_2;
 }
 
 function analisisRanking(datos_pond_fecha, nivel){
 	const resultado = {};
-	//console.log(datos_pond_fecha, nivel);
 
 	datos_pond_fecha.forEach(row => {
 		const indicador = row.indicador;
@@ -1310,7 +1301,6 @@ function analisisRanking_2(datos_mes_act, datos_mes_ant) {
 			diferencia: pondAct - pondAnt
 		};
 	});
-	console.log(resultado);
 	return resultado;//*/
 }
 
@@ -1525,23 +1515,17 @@ function ActualizarCadaGrafica(paso){
 		actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada);
 		pond_unidad_2 = actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_deseada);
 	}	
-	//console.log(pond_unidad_1, pond_unidad_2);
 	actualizarAnalisis_1(pond_unidad_1, pond_unidad_2);
 	actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada);
 	loader.style.display = 'none';
-
 }
 
 function actualizarGraficaDesempeñosPastel(datos, unidad_deseada, fecha_deseada, desempeño) {
-	console.log(`Se actualizará la gráfica de pastel con ${unidad_deseada} en ${fecha_deseada}, resaltando el desempeño ${desempeño}.`);
-	//console.log('De los datos:', datos);
 	const pulled = [0, 0, 0, 0];    // Posición de las secciones de desempeños (centradas o salidas)
 	const datos_fechaFiltrada = filtrarFecha(datos, fecha_deseada);
 	const datosFiltrados = filtrarUnidad(datos_fechaFiltrada, unidad_deseada);
 	const conteo = contarColores(datosFiltrados);
 	const values = [conteo.green, conteo.red, conteo.orange, conteo.lightgray];
-
-	//console.log('Datos filtrados por desempeño: ', datosFiltrados);
 
 	index_color = labels.indexOf(desempeño);
 	pulled[index_color] = 0.1;      // Posición del desempeño seleccionado 
@@ -1608,12 +1592,10 @@ function actualizarGraficaDesempeñosPastel(datos, unidad_deseada, fecha_deseada
 }
 
 function actualizarGraficaDesempeñosBarras(datosFiltrados, desempeño){
-	console.log(`Se actualizará la gráfica con los indicadores de desempeño ${desempeño}.`);
 	index_color = labels.indexOf(desempeño);
 	color_deseado = colors_desempeños[index_color];
 
 	const datosFiltrados2 = filtrarDesempeño(datosFiltrados, color_deseado);
-	//console.log(datosFiltrados2)
 
 	// Calcular errores y armar nuevo array
 	const datosConError = filtrarErrores(datosFiltrados2);
@@ -1718,7 +1700,7 @@ function actualizarGraficaDesempeñosBarras(datosFiltrados, desempeño){
 		},
 		xaxis: {
 			unifiedhovertitle: { text: '<b>%{x}</b>' },
-			tickangle: -90, // Puedes probar con -90 si lo quieres vertical
+			tickangle: -90, 
 			tickfont: {
 				size: 14
 			}
@@ -1733,7 +1715,6 @@ function actualizarGraficaDesempeñosBarras(datosFiltrados, desempeño){
 }
 
 function actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado){
-    console.log(`Se actualizará la gráfica historica, con datos de ${unidad_deseada} con el histórico del indicador ${indicador_deseado}.`)
     const datos_ = filtrarUnidad(datos, unidad_deseada);
     const datosFiltrados3 = filtrarIndicador(datos_, indicador_deseado);
     datosConError = filtrarErrores(datosFiltrados3);
@@ -1759,18 +1740,6 @@ function actualizarGraficaHistorico(datos, unidad_deseada, indicador_deseado){
     let fechas_ = [];
     let lim_inf = 0, lim_sup = 0;
     lim_sup = index_fecha+1
-    
-    /* // PROCESO PARA ACORTAR A 1 AÑO DE PERIODO.
-    if ((index_fecha-12) < 0) {
-		fechas_ = fechas.slice(0, index_fecha+1);
-		lim_inf = 0;
-		lim_sup = index_fecha+1;
-    } else{
-		fechas_ = fechas.slice(index_fecha-12, index_fecha+1);
-		lim_inf = index_fecha-12;
-		lim_sup = index_fecha+1;
-    }
-    */
     
     Plotly.react("indicadores_historico", 
 	[
@@ -1872,10 +1841,8 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	const datosFiltrados_ = filtrarUnidad(datos, unidad_deseada);
 	const datosFiltrados__ = filtrarIndicador(datosFiltrados_, indicador_deseado);
 	const datosFiltrados5 = filtrarFecha(datosFiltrados__, fecha_deseada);
-
-	//console.log(datos_desc);
 	const datosFiltrados5_ = filtrarIndicador(datos_desc, indicador_deseado);
-	//console.log(datosFiltrados5, datosFiltrados5_);
+
 	let rango1 = 0;
 	let rango2 = 0;
 	const rangoEsperado = datosFiltrados5[0]['esperado_'];
@@ -1899,7 +1866,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	const punto_res = punto_num / punto_den * f;
 	const nombre_num = datosFiltrados5_[0]['nombre_num'];
 	const nombre_den = datosFiltrados5_[0]['nombre_den'];
-	//console.log('numerador:', punto_num, 'denominador:', punto_den, 'den_fijo:', den_fijo, 'factor:', f, 'rango1:', rango1, 'rango2:',rango2, 'nombre_num:', nombre_num, 'nombre_Den:', nombre_den);
 	
 	// Status
 	if (rango1 != 0 && rango2 == 0){status_num = 'mayorA';}
@@ -1907,20 +1873,11 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	else if (rango1 != 0 && rango2 != 0){status_num = 'ambos';};
 
 	if (den_fijo == false){
-		//console.log('Denominador no fijo');
 		if (rango1 != 0 && rango2 == 0){status_den = 'mayorA';}
 		else if (rango1 == 0 && rango2 != 0){status_den = 'menorA';}
 		else if (rango1 != 0 && rango2 != 0){status_den = 'ambos';};
 	};
-	/*
-	try{
-		console.log('El status del numerador es:', status_num);
-		console.log('El status del denominador es:', status_den);
-	} catch(error){
-		console.log('El status del numerador es:', status_num);
-		console.log('Denominador es fijo');
-	}
-	*/
+
 	// Punto minimo
 	let punto_num1 = 0;
 	let punto_num2 = 0;
@@ -1944,14 +1901,12 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 			punto_den2 = f * punto_num / rango2;
 		}
 	};
-	//console.log('Puntos:', punto_num1,punto_num2,punto_den1,punto_den2);
 
 	// Rango de valores
 	const max_den = Math.max(punto_den, punto_den1, punto_den2);
 	const max_num = Math.max(punto_num, punto_num1, punto_num2);
 	const min_den = Math.min(punto_den, punto_den1, punto_den2);
 	const min_num = Math.min(punto_num, punto_num1, punto_num2);
-	//console.log('El punto maximo de numerador:', max_num, 'denominador:', max_den);
 
 	// Rango de X y Y
 	const x = []; // den
@@ -1960,8 +1915,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	for (let i = min_den*0.75; i <= max_den*1.25; i += ((max_den*1.25)-(min_den*0.75))/steps) x.push(i);
 	for (let j = min_num*0.75; j <= max_num*1.25; j += ((max_num*1.25)-(min_num*0.75))/steps) y.push(j);
 
-	//console.log('el rango de valores de den es:', max_den*0.75 ,'-', max_den*1.25, 'el rango de valores de num es: ', max_num*0.75 ,' -', max_num*1.25);
-	//console.log('x:', x, 'y:', y);
 	
 	// Condición
 	let condicion_num = null;
@@ -1977,13 +1930,11 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 		res = rango1 / f * punto_den;
 		res_format = res.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 		texto += `Num > ${res_format}`;
-		//console.log(`La condicion num es: ${texto}`);
 		z = y.map(yVal => x.map(xVal => (yVal >= res && xVal >= punto_den ? 1 : null)));
 	} else if (status_num == 'menorA'){
 		res = rango2 / f * punto_den;
 		res_format = res.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 		texto += `Num < ${res_format}`;
-		//console.log(`La condicion num es: ${texto}`);
 		z = y.map(yVal => x.map(xVal => (yVal <= res && xVal >= punto_den ? 1 : null)));
 	} else if (status_num == 'ambos'){
 		res = rango1 / f * punto_den;
@@ -1991,29 +1942,24 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 		res2 = rango2 / f * punto_den;
 		res_format2 = res2.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 		texto += `${res_format} < Num < ${res_format2}`;
-		//console.log(`Las condiciones num son: ${texto}`);
 		z = y.map(yVal => x.map(xVal => (yVal >= res && yVal <= res2 && xVal >= punto_den ? 1 : null)));
 	}
-	//console.log(z);
 	if (den_fijo == true){
 		let punto_den_format = punto_den.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 		texto += `\nDen = ${punto_den_format}`;
 	};
 
 	if (den_fijo == false){
-		//console.log('Denominador no fijo');
 		texto = '';
 		if (status_den == 'mayorA'){
 			res = rango1 / f;
 			res_format = res.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 			texto += `Num > ${res_format} * Den`;
-			//console.log(`La condicion den es: ${texto}`);
 			z = y.map(yVal => x.map(xVal => (yVal >= (res * xVal) ? 1 : null)));
 		} else if (status_den == 'menorA'){
 			res = rango2 / f;
 			res_format = res.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 			texto += `Num < ${res_format} * Den`;
-			//console.log(`La condicion den es: ${texto}`);
 			z = y.map(yVal => x.map(xVal => (yVal <= (res * xVal) ? 1 : null)));
 		} else if (status_den == 'ambos'){
 			res = rango1 / f;
@@ -2021,17 +1967,12 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 			res2 = rango2 / f;
 			res_format2 = res2.toLocaleString('es-mx', {minimumFractionDigits:2, maximumFractionDigits: 2});
 			texto += `${res_format} * Den < Num < ${res_format2} * Den`;
-			//console.log(`Las condiciones den son: ${texto}`);
 			z = y.map(yVal => x.map(xVal => (yVal >= (res * xVal) && yVal <= (res2 * xVal) ? 1 : null)));
 		}
 	};
 	
-	//console.log(`La condicion es ${texto}`);  
-	//console.log(z);
-	//console.log(x.length, y.length);
 
 	// Matriz Z basada en condición: y >= 350
-	// const z = y.map(yVal => x.map(() => (yVal >= 350 ? 1 : null)));
 	format_den = insertarSaltosLinea(nombre_den, 90);
 	format_num = insertarSaltosLinea(nombre_num, 65);
 	
@@ -2113,7 +2054,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	let color = 'green';
 	let name = '';
 	if (den_fijo == true){
-		//console.log('Al graficar el denominador es constante');      
 		if (rango1 != 0){
 			y2 = Array(steps).fill(rango1/f*punto_den);
 			name = `Num > ${punto_num1.toLocaleString('es-mx', {maximumFractionDigits: 2})}`;
@@ -2125,7 +2065,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 			addLine('indicador_numden', x, y2, color, name);
 		}
 	} else{
-		//console.log('Al graficar el denominador NO es constante')
 		if (rango1 != 0){
 			y2 = x.map(d => rango1 / f * d);
 			name = `Num > ${(rango1/f).toLocaleString('es-mx', {maximumFractionDigits: 2})} * Den`;
@@ -2140,7 +2079,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 
 	// Linea constante poblacion
 	if (den_fijo == true){
-		//console.log('Se grafica el denominador constante y el punto de cambio.');
 		x2 = Array(steps).fill(punto_den);
 		name = `Denominador = ${punto_den.toLocaleString('es-mx', {maximumFractionDigits: 2})}`;
 		addLine('indicador_numden', x2, y, 'navy', name);
@@ -2163,8 +2101,6 @@ async function actualizarGraficaNumDen() { //datos, unidad_deseada, indicador_de
 	// punto actual
 	addActualPoint('indicador_numden', punto_den, punto_num, color_deseado, f, res);
 	document.getElementById('loader-overlay').style.display = 'none';
-	//loader.classList.remove('show-loader');
-	//console.log('Loader none')
 }
 
 function limpiarGraficaNumDen(){
@@ -2212,12 +2148,9 @@ function limpiarGraficaNumDen(){
 
 function actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada){	
 	if (unidad_deseada != 'HGZ 03 Tuxtepec' & unidad_deseada != 'HGZ 01 Oaxaca' & unidad_deseada != 'UMAA Oaxaca' & unidad_deseada != 'Oaxaca'){
-		console.log('actualizando ranking general 1 ');
 		datos_pond_fecha = filtrarFecha(datos_pond, fecha_deseada);
-		//console.log(datos_pond_fecha)
 
 		ranking_nivel_1 = analisisRanking(datos_pond_fecha, 'Primer Nivel');
-		//console.log(ranking_nivel_1);
 
 		const datosOrdenados_1 = Object.entries(ranking_nivel_1)
 		.map(([unidad, valores]) => ({
@@ -2316,16 +2249,12 @@ function actualizarGraficaRankingGeneral_1N(datos_pond, fecha_deseada){
 }
 
 function actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_deseada){
-	console.log('actualizando ranking indicador 1 ');
 	datos_pond_fecha = filtrarFecha(datos_pond, fecha_deseada);
-	//console.log(datos_pond_fecha);
 	ponderaciones = analisisRanking(datos_pond_fecha, 'Primer Nivel');
-	//console.log(ponderaciones);
 
 	const pond_unidad = Object.fromEntries(Object.entries(ponderaciones).filter(([unidad]) => unidad === unidad_deseada));
-	//console.log(pond_unidad);
-
 	let grupo_indicadores = {};
+
 	if (pond_unidad[unidad_deseada]) {
 		const unidad = pond_unidad[unidad_deseada];
 		grupo_indicadores = Object.entries(unidad.inds);
@@ -2434,12 +2363,9 @@ function actualizarGraficaRankingIndicador_1N(datos_pond, unidad_deseada, fecha_
 
 function actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada){	
 	if (unidades2.includes(unidad_deseada) & unidad_deseada != 'Oaxaca') {
-		console.log('actualizando ranking general 2');
 		datos_pond_fecha = filtrarFecha(datos_pond, fecha_deseada);
-		//console.log(datos_pond_fecha)
 
 		ranking_nivel_2 = analisisRanking(datos_pond_fecha, 'Segundo Nivel');
-		//console.log(ranking_nivel_2);
 
 		const datosOrdenados_1 = Object.entries(ranking_nivel_2)
 		.map(([unidad, valores]) => ({
@@ -2538,18 +2464,14 @@ function actualizarGraficaRankingGeneral_2N(datos_pond, fecha_deseada){
 }
 
 function actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_deseada){
-	console.log('actualizando ranking indicador 2 ');
 	datos_pond_fecha = filtrarFecha(datos_pond, fecha_deseada);
-	//console.log(datos_pond_fecha);
 	if (unidades2.includes(unidad_deseada) & unidad_deseada != 'Oaxaca') {
 		ponderaciones = analisisRanking(datos_pond_fecha, 'Segundo Nivel');
 	} else if (unidad_deseada == 'Oaxaca') {
 		ponderaciones = analisisRanking(datos_pond_fecha, 'Delegacional');
 	}
-	//console.log(ponderaciones);
 
 	const pond_unidad = Object.fromEntries(Object.entries(ponderaciones).filter(([unidad]) => unidad === unidad_deseada));
-	//console.log(pond_unidad);
 
 	if (pond_unidad[unidad_deseada]) {
 		const unidad = pond_unidad[unidad_deseada];
@@ -2585,7 +2507,6 @@ function actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_
 	const txt_color = col_obtenidos.map((valor, i) => {
 		if (valor == 'rgba(255,192,0,1)'){ return 'black'; } else { return 'white'; }
 	});
-	//console.log(x_labels, estimados, obtenidos);
 	Plotly.react("ranking_indicador_2N", 
 		[
 			{
@@ -2616,7 +2537,6 @@ function actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_
 			}
 		], 
 		{
-			/*width: document.getElementById('ranking_indicador_2N').clientWidth*0.9,*/
 			margin: { b: 50, l: 10, t:60, r:10 },
 			autosize: true,
 			title: {
@@ -2654,8 +2574,6 @@ function actualizarGraficaRankingIndicador_2N(datos_pond, unidad_deseada, fecha_
 }
 
 function actualizarAnalisis_1(pond_unidad_1, pond_unidad_2){
-	//console.log(pond_unidad_1);
-	//console.log(pond_unidad_2);
 	cuadro_tabla_1 = document.getElementById('tabla_1')
 	cuadro_tabla_2 = document.getElementById('tabla_2')
 	tabla_ranking_1.clearData();
@@ -2706,7 +2624,6 @@ function actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada){
 	tabla_ranking_comp_1.getColumn("mes_act").updateDefinition({title: fecha_deseada});
 	
 	[data_mejor, data_peor] = analisisRanking_3(rank_mes_act, rank_mes_ant);
-	console.log(data_peor, data_mejor);
 	tabla_ranking_comp_21.updateOrAddData(data_peor);
 	tabla_ranking_comp_22.updateOrAddData(data_mejor);
 	tabla_ranking_comp_21.getColumn("mes_ant").updateDefinition({title: fecha_ant});
@@ -2724,7 +2641,7 @@ document.getElementById('prev-month').addEventListener('click', () => {
 	updateSelectedMonth();
 	updateYearDisplay();
 	ActualizarCadaGrafica(1);
-	fecha_deseada = (`${meses[selectedMonth-1]} ${currentYear}`);//.toUpperCase();
+	fecha_deseada = (`${meses[selectedMonth]} ${currentYear}`);//.toUpperCase();
 	checkMonths(fecha_deseada);
 });
 
@@ -2737,7 +2654,7 @@ document.getElementById('next-month').addEventListener('click', () => {
 	updateSelectedMonth();
 	updateYearDisplay();
 	ActualizarCadaGrafica(1);
-	fecha_deseada = (`${meses[selectedMonth-1]} ${currentYear}`);//.toUpperCase();
+	fecha_deseada = (`${meses[selectedMonth]} ${currentYear}`);//.toUpperCase();
 	checkMonths(fecha_deseada);
 });
 
