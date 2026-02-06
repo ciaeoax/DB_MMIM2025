@@ -609,13 +609,15 @@ tabla_ranking_1 = new Tabulator("#tabla_1", {
 		{ title: "Indicadores<br>1° Nivel", field: "indicador", width: 300, tooltip: function(e, cell) {
 				if (!cell || typeof cell.getRow !== "function") return null;		
 				const row = cell.getRow();
+				const nombre_indicador_ = row.getData().indicador;
+				const descr_indicador_ = indicadores_nombres[nombre_indicador_] ? indicadores_nombres[nombre_indicador_] : '-';
 				let depth = 0;
 				let parent = row.getTreeParent();
 				while (parent) {
 					depth++;
 					parent = parent.getTreeParent();
 				}
-				if (depth === 3) return "Hola";
+				if (depth === 3) return descr_indicador_;
 				return null;
 			}
 		},
@@ -2713,3 +2715,4 @@ console.log('INICIO')
 document.getElementById('loader-overlay').style.display = 'flex';
 loader.classList.add('show-loader');
 window.addEventListener('DOMContentLoaded', loadFirebaseData);
+
