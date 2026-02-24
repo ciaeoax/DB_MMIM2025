@@ -21,7 +21,7 @@ indicadores_nombres = { 'DM 01' : 'Cobertura de detección de diabetes 20+ años
 labels = ["Esperado", "Bajo", "Medio", "Sin datos"];
 colors_desempeños = ["green", "red", "orange", "lightgray"];
 colors = ["green", "red", "orange", "lightgray"];
-fechas = ['diciembre 2024', 'enero 2025', 'febrero 2025', 'marzo 2025', 'abril 2025', 'mayo 2025', 'junio 2025', 'julio 2025', 'agosto 2025', 'septiembre 2025'];
+fechas = ['diciembre 2024', 'enero 2025', 'febrero 2025', 'marzo 2025', 'abril 2025', 'mayo 2025', 'junio 2025', 'julio 2025', 'agosto 2025', 'septiembre 2025', 'enero 2026']; // agregar una nueva fecha cada año
 
 mes_deseado = fechas[fechas.length - 1].split(' ')[0];
 año_deseado = fechas[fechas.length - 1].split(' ')[1];;
@@ -2613,9 +2613,16 @@ function actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada){
 	datos_pond_ = filtrarUnidad(datos_pond, unidad_deseada);
 	datos_mes_act = filtrarFecha(datos_pond_, fecha_deseada);
 	[mes, año] = fecha_deseada.split(' ');
-	mes_ant = meses[meses.indexOf(mes) - 1];
+	if (meses.indexOf(mes) == 0){
+		mes_ant = 'diciembre'
+		año = año - 1
+	}
+	else{
+		mes_ant = meses[meses.indexOf(mes) - 1];
+	}
 	fecha_ant = mes_ant + ' ' + año
 	datos_mes_ant = filtrarFecha(datos_pond_, fecha_ant);
+	console.log(fecha_deseada, fecha_ant);
 	
 	rank_mes_act = agruparRanking(datos_mes_act);
 	rank_mes_ant = agruparRanking(datos_mes_ant);
@@ -2715,4 +2722,5 @@ console.log('INICIO')
 document.getElementById('loader-overlay').style.display = 'flex';
 loader.classList.add('show-loader');
 window.addEventListener('DOMContentLoaded', loadFirebaseData);
+
 
