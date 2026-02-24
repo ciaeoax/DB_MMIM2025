@@ -2643,8 +2643,8 @@ function actualizarAnalisis_2(datos_pond, unidad_deseada, fecha_deseada){
 
 document.getElementById('prev-month').addEventListener('click', () => {    
 	selectedMonth--;
-	if (selectedMonth < 1) {
-		selectedMonth = 12;
+	if (selectedMonth < 0) {
+		selectedMonth = 11;
 		currentYear--;
 	}
 	updateSelectedMonth();
@@ -2656,8 +2656,8 @@ document.getElementById('prev-month').addEventListener('click', () => {
 
 document.getElementById('next-month').addEventListener('click', () => {
 	selectedMonth++;
-	if (selectedMonth > 12) {
-		selectedMonth = 1;
+	if (selectedMonth > 11) {
+		selectedMonth = 0;
 		currentYear++;
 	}
 	updateSelectedMonth();
@@ -2722,5 +2722,6 @@ console.log('INICIO')
 document.getElementById('loader-overlay').style.display = 'flex';
 loader.classList.add('show-loader');
 window.addEventListener('DOMContentLoaded', loadFirebaseData);
+
 
 
