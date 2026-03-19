@@ -725,14 +725,8 @@ tabla_ranking_comp_21 = new Tabulator("#tabla_rank_comp_21", {
 				const row = cell.getRow();
 				const nombre_indicador_ = row.getData().indicador;
 				const descr_indicador_ = indicadores_nombres[nombre_indicador_] ? indicadores_nombres[nombre_indicador_] : '-';
-				let depth = 0;
-				let parent = row.getTreeParent();
-				while (parent) {
-					depth++;
-					parent = parent.getTreeParent();
-				}
-				if (depth === 3) return descr_indicador_;
-				return null;
+				
+				return descr_indicador_;
         }},
         { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 180 },
         { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 180 },
@@ -747,7 +741,14 @@ tabla_ranking_comp_22 = new Tabulator("#tabla_rank_comp_22", {
     dataTreeSelectPropagate: true,
     columns: [
     	{ title: 'n', formatter: 'rownum', hozAlign: "center", },
-        { title: "Indicadores", field: "indicador", width: 200, },
+        { title: "Indicadores", field: "indicador", width: 200, tooltip: function(e, cell) {
+				if (!cell || typeof cell.getRow !== "function") return null;		
+				const row = cell.getRow();
+				const nombre_indicador_ = row.getData().indicador;
+				const descr_indicador_ = indicadores_nombres[nombre_indicador_] ? indicadores_nombres[nombre_indicador_] : '-';
+				
+				return descr_indicador_;
+        }},
         { title: "Mes anterior", field: "mes_ant", hozAlign: "center", formatter: formato2decimas, width: 180 },
         { title: "Mes actual", field: "mes_act", hozAlign: "center", formatter: formato2decimas, width: 180 },
         { title: "Diferencia", field: "diferencia", hozAlign: "center", formatter: formatoTablaAnalisis_2, width: 180 },
